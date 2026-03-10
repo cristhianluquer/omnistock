@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniStock - Nueva Venta</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .sale-container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+        }
+        
+        .sale-main {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .sale-header {
+            background: var(--bg-white);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+        
+        .sale-header-row {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .sale-header-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .sale-header-field {
+            flex: 1;
+        }
+        
+        .sale-header-field label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .sale-header-field input,
+        .sale-header-field select {
+            width: 100%;
+        }
+        
+        .client-search {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .client-search input {
+            flex: 1;
+        }
+        
+        .products-section {
+            background: var(--bg-white);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+        
+        .products-search {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .products-search input {
+            flex: 1;
+        }
+        
+        .sale-summary {
+            background: var(--bg-white);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .summary-row:last-child {
+            border-bottom: none;
+            border-top: 2px solid var(--border);
+            margin-top: 8px;
+            padding-top: 16px;
+        }
+        
+        .summary-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .summary-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .summary-total {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .sale-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .sale-actions .btn {
+            flex: 1;
+        }
+        
+        .products-table {
+            margin-top: 16px;
+        }
+        
+        .products-table th:last-child,
+        .products-table td:last-child {
+            width: 80px;
+            text-align: center;
+        }
+        
+        @media (max-width: 1024px) {
+            .sale-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sale-summary {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <h2>OmniStock</h2>
+            </div>
+            <nav class="navbar-menu">
+                <a href="dashboard.html" class="nav-link">Inicio</a>
+                <a href="productos.html" class="nav-link">Productos</a>
+                <a href="#" class="nav-link">Clientes</a>
+                <a href="venta.html" class="nav-link active">Ventas</a>
+                <a href="#" class="nav-link">Inventario</a>
+            </nav>
+            <div class="navbar-user">
+                <span>Usuario: Admin</span>
+                <button class="btn btn-sm btn-secondary">Salir</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Nueva Venta</h1>
+            
+            <div class="sale-container">
+                <!-- Sección Principal -->
+                <div class="sale-main">
+                    <!-- Información de Cliente y Factura -->
+                    <div class="sale-header">
+                        <div class="sale-header-row">
+                            <div class="sale-header-field" style="flex: 2;">
+                                <label>Cliente</label>
+                                <div class="client-search">
+                                    <input type="text" placeholder="Buscar cliente..." class="form-control">
+                                    <button class="btn btn-primary">Seleccionar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sale-header-row">
+                            <div class="sale-header-field">
+                                <label>Número de Factura</label>
+                                <input type="text" value="FAC-2025-001" class="form-control" readonly>
+                            </div>
+                            <div class="sale-header-field">
+                                <label>Fecha</label>
+                                <input type="date" value="2025-03-15" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Productos -->
+                    <div class="products-section">
+                        <h3 style="margin-bottom: 16px;">Productos</h3>
+                        <div class="products-search">
+                            <input type="text" placeholder="Buscar producto por código o nombre..." class="form-control">
+                            <button class="btn btn-primary">Buscar</button>
+                        </div>
+                        
+                        <table class="data-table products-table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Descuento</th>
+                                    <th>Subtotal</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Laptop HP</td>
+                                    <td>
+                                        <input type="number" value="1" min="1" style="width: 60px; text-align: center;" class="form-control">
+                                    </td>
+                                    <td>$850.00</td>
+                                    <td>
+                                        <input type="number" value="0" min="0" style="width: 80px; text-align: center;" class="form-control">
+                                    </td>
+                                    <td>$850.00</td>
+                                    <td>
+                                        <button class="btn-icon btn-icon-danger" title="Eliminar">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <polyline points="3 6 5 6 21 6"/>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Camiseta M</td>
+                                    <td>
+                                        <input type="number" value="2" min="1" style="width: 60px; text-align: center;" class="form-control">
+                                    </td>
+                                    <td>$25.00</td>
+                                    <td>
+                                        <input type="number" value="5" min="0" style="width: 80px; text-align: center;" class="form-control">
+                                    </td>
+                                    <td>$45.00</td>
+                                    <td>
+                                        <button class="btn-icon btn-icon-danger" title="Eliminar">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <polyline points="3 6 5 6 21 6"/>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <button class="btn btn-secondary" style="margin-top: 16px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Agregar Producto
+                        </button>
+                    </div>
+                    
+                    <!-- Observaciones -->
+                    <div class="products-section">
+                        <label for="observaciones">Observaciones</label>
+                        <textarea id="observaciones" rows="3" class="form-control" placeholder="Notas adicionales sobre la venta..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- Resumen -->
+                <div class="sale-summary">
+                    <h3 style="margin-bottom: 20px;">Resumen</h3>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Subtotal</span>
+                        <span class="summary-value">$895.00</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Impuesto (19%)</span>
+                        <span class="summary-value">$170.05</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Descuento</span>
+                        <span class="summary-value">$0.00</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label summary-total">TOTAL</span>
+                        <span class="summary-value summary-total">$1,065.05</span>
+                    </div>
+                    
+                    <div class="sale-actions">
+                        <button class="btn btn-secondary">Cancelar</button>
+                        <button class="btn btn-primary">Guardar Venta</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
