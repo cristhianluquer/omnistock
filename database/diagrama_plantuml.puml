@@ -1,0 +1,121 @@
+@startuml OmniStock_ER_Diagram
+!theme plain
+skinparam linetype ortho
+
+' Definir entidades
+entity "Roles" {
+  * id_rol : INT <<PK>>
+  --
+  * nombre_rol : VARCHAR(50)
+  descripcion : VARCHAR(255)
+  activo : BIT
+  fecha_creacion : DATETIME
+}
+
+entity "Usuarios" {
+  * id_usuario : INT <<PK>>
+  --
+  * nombre_usuario : VARCHAR(50)
+  * email : VARCHAR(100)
+  * password_hash : VARCHAR(255)
+  * nombre_completo : VARCHAR(100)
+  * id_rol : INT <<FK>>
+  activo : BIT
+  fecha_creacion : DATETIME
+  ultimo_acceso : DATETIME
+}
+
+entity "Categorias" {
+  * id_categoria : INT <<PK>>
+  --
+  * nombre_categoria : VARCHAR(100)
+  descripcion : VARCHAR(255)
+  activo : BIT
+  fecha_creacion : DATETIME
+}
+
+entity "Productos" {
+  * id_producto : INT <<PK>>
+  --
+  * codigo_producto : VARCHAR(50)
+  * nombre_producto : VARCHAR(200)
+  descripcion : VARCHAR(500)
+  * id_categoria : INT <<FK>>
+  * precio_venta : DECIMAL(10,2)
+  * precio_compra : DECIMAL(10,2)
+  * stock_actual : INT
+  * stock_minimo : INT
+  unidad_medida : VARCHAR(20)
+  activo : BIT
+  fecha_creacion : DATETIME
+  fecha_actualizacion : DATETIME
+}
+
+entity "Clientes" {
+  * id_cliente : INT <<PK>>
+  --
+  * tipo_documento : VARCHAR(10)
+  * numero_documento : VARCHAR(20)
+  * nombre_completo : VARCHAR(200)
+  email : VARCHAR(100)
+  telefono : VARCHAR(20)
+  direccion : VARCHAR(255)
+  ciudad : VARCHAR(100)
+  activo : BIT
+  fecha_creacion : DATETIME
+  fecha_actualizacion : DATETIME
+}
+
+entity "Ventas" {
+  * id_venta : INT <<PK>>
+  --
+  * numero_factura : VARCHAR(50)
+  * id_cliente : INT <<FK>>
+  * id_usuario : INT <<FK>>
+  * fecha_venta : DATETIME
+  * subtotal : DECIMAL(10,2)
+  * impuesto : DECIMAL(10,2)
+  * descuento : DECIMAL(10,2)
+  * total : DECIMAL(10,2)
+  * estado : VARCHAR(20)
+  observaciones : VARCHAR(500)
+  fecha_creacion : DATETIME
+}
+
+entity "Detalles_Venta" {
+  * id_detalle : INT <<PK>>
+  --
+  * id_venta : INT <<FK>>
+  * id_producto : INT <<FK>>
+  * cantidad : INT
+  * precio_unitario : DECIMAL(10,2)
+  * descuento : DECIMAL(10,2)
+  * subtotal : DECIMAL(10,2)
+}
+
+entity "Movimientos_Inventario" {
+  * id_movimiento : INT <<PK>>
+  --
+  * id_producto : INT <<FK>>
+  * tipo_movimiento : VARCHAR(20)
+  * cantidad : INT
+  * cantidad_anterior : INT
+  * cantidad_nueva : INT
+  motivo : VARCHAR(255)
+  * id_usuario : INT <<FK>>
+  id_venta : INT <<FK>>
+  fecha_movimiento : DATETIME
+}
+
+' Relaciones
+Roles ||--o{ Usuarios : "tiene"
+Categorias ||--o{ Productos : "contiene"
+Clientes ||--o{ Ventas : "realiza"
+Usuarios ||--o{ Ventas : "registra"
+Ventas ||--o{ Detalles_Venta : "contiene"
+Productos ||--o{ Detalles_Venta : "incluye"
+Productos ||--o{ Movimientos_Inventario : "tiene"
+Usuarios ||--o{ Movimientos_Inventario : "registra"
+Ventas ||--o{ Movimientos_Inventario : "genera"
+
+@enduml
