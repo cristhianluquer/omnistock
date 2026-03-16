@@ -3,14 +3,12 @@
 {% block page_title %}Usuarios{% endblock %}
 {% block icon %}person-gear{% endblock %}
 {% block content %}
-
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h6 class="text-muted mb-0">{{ usuarios|length }} usuarios activos</h6>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrear">
         <i class="bi bi-plus-lg me-1"></i> Nuevo Usuario
     </button>
 </div>
-
 <div class="card">
     <div class="card-body p-0">
         <table class="table table-hover align-middle mb-0">
@@ -18,19 +16,14 @@
             <tbody>
             {% for u in usuarios %}
             <tr>
-                <td class="text-muted">{{ u.id }}</td>
-                <td class="fw-semibold">{{ u.nombre }}</td>
-                <td><code>{{ u.usuario }}</code></td>
+                <td class="text-muted">{{ u.id_usuario }}</td>
+                <td class="fw-semibold">{{ u.nombre_completo }}</td>
+                <td><code>{{ u.nombre_usuario }}</code></td>
                 <td>{{ u.email or '-' }}</td>
-                <td>
-                    <span class="badge {{ 'bg-danger' if u.rol_nombre == 'ADMINISTRADOR' else 'bg-primary' if u.rol_nombre == 'VENDEDOR' else 'bg-secondary' }}">
-                        {{ u.rol_nombre }}
-                    </span>
-                </td>
+                <td><span class="badge {{ 'bg-danger' if u.nombre_rol == 'ADMINISTRADOR' else 'bg-primary' if u.nombre_rol == 'VENDEDOR' else 'bg-secondary' }}">{{ u.nombre_rol }}</span></td>
                 <td class="text-center">
-                    {% if u.id != session.get('user_id') %}
-                    <a href="{{ url_for('eliminar_usuario', id=u.id) }}" class="btn btn-sm btn-outline-danger"
-                       onclick="return confirm('¿Desactivar este usuario?')">
+                    {% if u.id_usuario != session.get('user_id') %}
+                    <a href="{{ url_for('eliminar_usuario', id=u.id_usuario) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Desactivar este usuario?')">
                         <i class="bi bi-person-x"></i>
                     </a>
                     {% else %}
@@ -43,38 +36,33 @@
         </table>
     </div>
 </div>
-
 <div class="modal fade" id="modalCrear" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>Nuevo Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>Nuevo Usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <form method="POST" action="{{ url_for('crear_usuario') }}">
+        <div class="modal-body">
+            <div class="mb-3"><label class="form-label fw-semibold">Nombre completo *</label>
+                <input type="text" name="nombre" class="form-control" required></div>
+            <div class="mb-3"><label class="form-label fw-semibold">Usuario (login) *</label>
+                <input type="text" name="usuario" class="form-control" required></div>
+            <div class="mb-3"><label class="form-label fw-semibold">Email</label>
+                <input type="email" name="email" class="form-control"></div>
+            <div class="mb-3"><label class="form-label fw-semibold">Contraseña *</label>
+                <input type="password" name="password" class="form-control" required></div>
+            <div class="mb-3"><label class="form-label fw-semibold">Rol</label>
+                <select name="id_rol" class="form-select">
+                    {% for r in roles %}
+                    <option value="{{ r.id_rol }}">{{ r.nombre_rol }}</option>
+                    {% endfor %}
+                </select>
             </div>
-            <form method="POST" action="{{ url_for('crear_usuario') }}">
-            <div class="modal-body">
-                <div class="mb-3"><label class="form-label fw-semibold">Nombre completo *</label>
-                    <input type="text" name="nombre" class="form-control" required></div>
-                <div class="mb-3"><label class="form-label fw-semibold">Usuario (login) *</label>
-                    <input type="text" name="usuario" class="form-control" required></div>
-                <div class="mb-3"><label class="form-label fw-semibold">Email</label>
-                    <input type="email" name="email" class="form-control"></div>
-                <div class="mb-3"><label class="form-label fw-semibold">Contraseña *</label>
-                    <input type="password" name="password" class="form-control" required></div>
-                <div class="mb-3"><label class="form-label fw-semibold">Rol</label>
-                    <select name="rol_id" class="form-select">
-                        {% for r in roles %}
-                        <option value="{{ r.id }}">{{ r.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Crear Usuario</button>
-            </div>
-            </form>
         </div>
-    </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Crear Usuario</button>
+        </div>
+        </form>
+    </div></div>
 </div>
 {% endblock %}

@@ -81,7 +81,7 @@
                     <tbody>
                     {% for v in ultimas_ventas %}
                     <tr>
-                        <td><a href="{{ url_for('detalle_venta', id=v.id) }}" class="text-decoration-none fw-bold">#{{ v.id }}</a></td>
+                        <td><a href="{{ url_for('detalle_venta', id=v.id_venta) }}" class="text-decoration-none fw-bold">#{{ v.id_venta }}</a></td>
                         <td>{{ v.cliente }}</td>
                         <td class="text-end fw-bold text-success">${{ "{:,.2f}".format(v.total) }}</td>
                         <td class="text-muted" style="font-size:12px">{{ v.fecha.strftime('%d/%m/%Y %H:%M') if v.fecha else '-' }}</td>

@@ -139,11 +139,13 @@ def crear_producto():
     if not nombre: flash('Nombre obligatorio','error'); return redirect(url_for('productos'))
     try:
         conn = get_db(); cur = conn.cursor()
+        import random, string
+        codigo = 'PROD-' + ''.join(random.choices(string.digits, k=6))
         cur.execute("""
-            INSERT INTO Productos (nombre_producto, descripcion, precio_venta,
+            INSERT INTO Productos (codigo_producto, nombre_producto, descripcion, precio_venta,
                                    precio_compra, stock_actual, stock_minimo, id_categoria)
-            VALUES (?,?,?,?,?,?,?)
-        """, nombre,
+            VALUES (?,?,?,?,?,?,?,?)
+        """, codigo, nombre,
              request.form.get('descripcion',''),
              request.form.get('precio_venta', 0),
              request.form.get('precio_compra', 0),
@@ -396,7 +398,7 @@ def crear_usuario():
             VALUES (?,?,?,?,?)
         """, usuario,
              request.form.get('email',''),
-             generate_password_hash(password),
+             generate_password_hash(password, method='pbkdf2:sha256'),
              nombre,
              request.form.get('id_rol', 2))
         conn.commit(); conn.close()
