@@ -6,7 +6,7 @@ Copia este archivo como 'config.py' y ajusta los valores según tu entorno
 # Configuración de Base de Datos
 DATABASE_CONFIG = {
     'server': 'localhost',
-    'database': 'OmniStock',
+    'database': 'omniStock',
     'username': 'sa',
     'password': 'TuContraseñaAqui',
     'driver': 'ODBC Driver 17 for SQL Server',

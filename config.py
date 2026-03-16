@@ -7,7 +7,7 @@ import pyodbc
 CONN_STRING_MAC = (
     'DRIVER={ODBC Driver 18 for SQL Server};'
     'SERVER=localhost,1433;'
-    'DATABASE=omniStock;'
+    'DATABASE=OmniStock;'
     'UID=sa;'
     'PWD=OmniStock2024!;'
     'TrustServerCertificate=yes;'
@@ -18,7 +18,7 @@ CONN_STRING_MAC = (
 CONN_STRING_WIN = (
     'DRIVER={ODBC Driver 18 for SQL Server};'
     'SERVER=localhost\\SQLEXPRESS;'
-    'DATABASE=omniStock;'
+    'DATABASE=OmniStock;'
     'Trusted_Connection=yes;'
     'TrustServerCertificate=yes;'
 )

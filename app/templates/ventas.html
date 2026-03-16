@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Ventas{% endblock %}
+{% block page_title %}Ventas{% endblock %}
+{% block icon %}cart3{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h6 class="text-muted mb-0">{{ ventas|length }} ventas registradas</h6>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalVenta">
+        <i class="bi bi-plus-lg me-1"></i> Nueva Venta
+    </button>
+</div>
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead><tr><th>Factura</th><th>Cliente</th><th>Vendedor</th><th class="text-end">Total</th><th>Estado</th><th>Fecha</th><th class="text-center">Detalle</th></tr></thead>
+            <tbody>
+            {% for v in ventas %}
+            <tr>
+                <td class="fw-bold">{{ v.numero_factura }}</td>
+                <td>{{ v.cliente }}</td>
+                <td class="text-muted">{{ v.vendedor }}</td>
+                <td class="text-end fw-bold text-success">${{ "{:,.2f}".format(v.total) }}</td>
+                <td><span class="badge {{ 'badge-completada' if v.estado == 'COMPLETADA' else 'badge-cancelada' }}">{{ v.estado }}</span></td>
+                <td class="text-muted" style="font-size:12px">{{ v.fecha_venta.strftime('%d/%m/%Y %H:%M') if v.fecha_venta else '-' }}</td>
+                <td class="text-center"><a href="{{ url_for('detalle_venta', id=v.id_venta) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a></td>
+            </tr>
+            {% endfor %}
+            {% if not ventas %}
+            <tr><td colspan="7" class="text-center py-5 text-muted"><i class="bi bi-cart-x" style="font-size:40px"></i><p class="mt-2">No hay ventas</p></td></tr>
+            {% endif %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nueva Venta -->
+<div class="modal fade" id="modalVenta" tabindex="-1">
+    <div class="modal-dialog modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><i class="bi bi-cart-plus me-2"></i>Registrar Venta</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <form method="POST" action="{{ url_for('crear_venta') }}">
+        <div class="modal-body">
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Cliente</label>
+                <select name="id_cliente" class="form-select">
+                    <option value="">Cliente general</option>
+                    {% for c in clientes %}<option value="{{ c.id_cliente }}">{{ c.nombre_completo }}</option>{% endfor %}
+                </select>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0 fw-bold">Productos</h6>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="agregarFila()"><i class="bi bi-plus-lg me-1"></i>Agregar</button>
+            </div>
+            <div id="productos-container">
+                <div class="row g-2 align-items-end mb-2 fila-producto">
+                    <div class="col-6">
+                        <label class="form-label small fw-semibold">Producto</label>
+                        <select name="producto_id[]" class="form-select form-select-sm select-producto" onchange="actualizarPrecio(this)">
+                            <option value="">Seleccionar...</option>
+                            {% for p in productos %}
+                            <option value="{{ p.id_producto }}" data-precio="{{ p.precio_venta }}" data-stock="{{ p.stock_actual }}">
+                                {{ p.nombre_producto }} — ${{ "{:,.2f}".format(p.precio_venta) }} (stock: {{ p.stock_actual }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-2"><label class="form-label small fw-semibold">Cantidad</label>
+                        <input type="number" name="cantidad[]" class="form-control form-control-sm input-cantidad" value="1" min="1" onchange="calcularTotal()"></div>
+                    <div class="col-3"><label class="form-label small fw-semibold">Subtotal</label>
+                        <input type="text" class="form-control form-control-sm subtotal" readonly value="$0.00"></div>
+                    <div class="col-1"><button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminarFila(this)"><i class="bi bi-trash"></i></button></div>
+                </div>
+            </div>
+            <hr>
+            <div class="text-end"><h5 class="fw-bold">Total: <span id="total-venta" class="text-success">$0.00</span></h5></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle me-1"></i>Registrar Venta</button>
+        </div>
+        </form>
+    </div></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const productosData = {
+    {% for p in productos %}{{ p.id_producto }}: { precio: {{ p.precio_venta }}, stock: {{ p.stock_actual }} },{% endfor %}
+};
+function actualizarPrecio(select) {
+    const fila = select.closest('.fila-producto');
+    const pid = select.value;
+    if (pid && productosData[pid]) fila.querySelector('.input-cantidad').max = productosData[pid].stock;
+    calcularTotal();
+}
+function calcularTotal() {
+    let total = 0;
+    document.querySelectorAll('.fila-producto').forEach(fila => {
+        const pid = fila.querySelector('.select-producto').value;
+        const qty = parseInt(fila.querySelector('.input-cantidad').value) || 0;
+        if (pid && productosData[pid]) {
+            const sub = productosData[pid].precio * qty;
+            fila.querySelector('.subtotal').value = '$' + sub.toLocaleString('es-CO', {minimumFractionDigits:2});
+            total += sub;
+        }
+    });
+    document.getElementById('total-venta').textContent = '$' + total.toLocaleString('es-CO', {minimumFractionDigits:2});
+}
+function agregarFila() {
+    const nueva = document.querySelector('.fila-producto').cloneNode(true);
+    nueva.querySelector('.select-producto').value = '';
+    nueva.querySelector('.input-cantidad').value = 1;
+    nueva.querySelector('.subtotal').value = '$0.00';
+    nueva.querySelector('.select-producto').onchange = function(){ actualizarPrecio(this); };
+    nueva.querySelector('.input-cantidad').onchange = calcularTotal;
+    document.getElementById('productos-container').appendChild(nueva);
+}
+function eliminarFila(btn) {
+    if (document.querySelectorAll('.fila-producto').length > 1) { btn.closest('.fila-producto').remove(); calcularTotal(); }
+}
+</script>
+{% endblock %}

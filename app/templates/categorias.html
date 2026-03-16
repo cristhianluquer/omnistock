@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Categorías{% endblock %}
+{% block page_title %}Categorías{% endblock %}
+{% block icon %}tags{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h6 class="text-muted mb-0">{{ categorias|length }} categorías</h6>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrear"><i class="bi bi-plus-lg me-1"></i> Nueva Categoría</button>
+</div>
+<div class="card"><div class="card-body p-0">
+    <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>#</th><th>Nombre</th><th class="text-center">Productos</th><th class="text-center">Acciones</th></tr></thead>
+        <tbody>
+        {% for c in categorias %}
+        <tr>
+            <td class="text-muted">{{ c.id_categoria }}</td>
+            <td class="fw-semibold">{{ c.nombre_categoria }}</td>
+            <td class="text-center"><span class="badge bg-primary">{{ c.total }}</span></td>
+            <td class="text-center">
+                {% if c.total == 0 %}
+                <a href="{{ url_for('eliminar_categoria', id=c.id_categoria) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar?')"><i class="bi bi-trash"></i></a>
+                {% else %}<span class="text-muted small">En uso</span>{% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div></div>
+<div class="modal fade" id="modalCrear" tabindex="-1">
+    <div class="modal-dialog modal-sm"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Nueva Categoría</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <form method="POST" action="{{ url_for('crear_categoria') }}">
+        <div class="modal-body"><label class="form-label fw-semibold">Nombre *</label><input type="text" name="nombre" class="form-control" required></div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn btn-primary">Crear</button></div>
+        </form>
+    </div></div>
+</div>
+{% endblock %}

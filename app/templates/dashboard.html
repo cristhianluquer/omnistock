@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block icon %}speedometer2{% endblock %}
+{% block content %}
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card" style="background:linear-gradient(135deg,#1565C0,#1E88E5)">
+            <div class="d-flex justify-content-between align-items-start">
+                <div><div class="number">{{ total_productos }}</div><div class="label">Productos activos</div></div>
+                <i class="bi bi-box-seam icon"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background:linear-gradient(135deg,#2E7D32,#43A047)">
+            <div class="d-flex justify-content-between align-items-start">
+                <div><div class="number">{{ total_clientes }}</div><div class="label">Clientes registrados</div></div>
+                <i class="bi bi-people icon"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background:linear-gradient(135deg,#6A1B9A,#8E24AA)">
+            <div class="d-flex justify-content-between align-items-start">
+                <div><div class="number">{{ total_ventas }}</div><div class="label">Ventas totales</div></div>
+                <i class="bi bi-cart3 icon"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background:linear-gradient(135deg,#E65100,#F57C00)">
+            <div class="d-flex justify-content-between align-items-start">
+                <div><div class="number">${{ "{:,.0f}".format(suma_ventas) }}</div><div class="label">Ingresos totales</div></div>
+                <i class="bi bi-currency-dollar icon"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Alertas de Stock</h6>
+                <span class="badge bg-warning text-dark">{{ alertas|length }}</span>
+            </div>
+            <div class="card-body p-0">
+                {% if alertas %}
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Producto</th><th class="text-center">Stock</th><th class="text-center">Mínimo</th></tr></thead>
+                    <tbody>
+                    {% for a in alertas %}
+                    <tr>
+                        <td>{{ a.nombre }}</td>
+                        <td class="text-center"><span class="badge bg-danger">{{ a.stock }}</span></td>
+                        <td class="text-center text-muted">{{ a.stock_minimo }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size:40px"></i>
+                    <p class="mt-2 mb-0">Todos los productos tienen stock suficiente</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2"></i>Últimas Ventas</h6>
+            </div>
+            <div class="card-body p-0">
+                {% if ultimas_ventas %}
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>#</th><th>Cliente</th><th class="text-end">Total</th><th>Fecha</th></tr></thead>
+                    <tbody>
+                    {% for v in ultimas_ventas %}
+                    <tr>
+                        <td><a href="{{ url_for('detalle_venta', id=v.id) }}" class="text-decoration-none fw-bold">#{{ v.id }}</a></td>
+                        <td>{{ v.cliente }}</td>
+                        <td class="text-end fw-bold text-success">${{ "{:,.2f}".format(v.total) }}</td>
+                        <td class="text-muted" style="font-size:12px">{{ v.fecha.strftime('%d/%m/%Y %H:%M') if v.fecha else '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-cart-x" style="font-size:40px"></i>
+                    <p class="mt-2 mb-0">No hay ventas registradas</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
